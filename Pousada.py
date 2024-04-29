@@ -1,0 +1,78 @@
+from datetime import datetime
+from Quarto import Quarto
+from Reserva import Reserva
+
+class Pousada:
+    def __init__(self, nome, contato, quartos, reservas, produtos):
+        self._nome = nome
+        self._contato = contato
+        self._quartos = quartos
+        self._reservas = reservas
+        self._produtos = produtos
+        
+    @property
+    def nome(self):
+        return self._nome
+    
+    @nome.setter
+    def nome(self, nome):
+        self._nome = nome
+     
+    @property   
+    def contato(self):
+        return self._contato
+    
+    @contato.setter
+    def contato(self, contato):
+        self.contato = contato
+        
+    def realizar_reserva(self, data_inicio, data_fim, cliente, numero_quarto):
+        disponibilidade = self.consulta_disponibilidade(data_inicio, data_fim, numero_quarto)
+        if(disponibilidade == False):
+            return "Quarto nao esta disponivel para reserva."
+        reserva = Reserva(data_inicio, data_fim, cliente, numero_quarto, "A")
+        self._reservas.append(reserva)
+        return "Reserva realizada com sucesso."
+
+    def consulta_disponibilidade(self, data_inicio, data_fim, numero_quarto):
+        reservas = self._reservas
+        for r in reservas: 
+            if r.quarto == numero_quarto:
+                # Se a nova reserva começa depois que a reserva atual termina
+                # ou se a nova reserva termina antes que a reserva atual comece,
+                # então não há conflito
+                if (r._dia_fim < data_inicio) or (r._dia_inicio > data_fim):
+                    continue
+                else:
+                    # Se a data está dentro do período de uma reserva existente,
+                    # não está disponível
+                    return False
+        # Se não encontrou o quarto ou não há conflitos de datas com as reservas existentes,
+        # então o quarto está disponível
+        return True
+
+    def cancela_reserva(self, cliente):
+        reservas = self._reservas
+        for r in reservas:
+            if r.cliente == cliente and r.status == 'A':
+                r.status = "C"
+                return "Reserva Cancelada"
+        return "Reserva não existente"
+    
+    def realiza_checkin(self, cliente):
+        reservas = self._reservas
+        valor_total_diarias = 0   
+        for r in reservas: 
+            if r.cliente == cliente:
+                r.status = "I"
+                valor_total_diarias = r.quarto._diaria * (r.dia_fim - r.dia_inicio + 1)
+                print ("checkin realizado!")  
+                print("data da reserva: do dia", r.dia_inicio, "Ao dia", r.dia_fim)              
+                print("valor total das diarias:", valor_total_diarias)
+                print("Informações do quarto:")
+                print("Número do quarto:",r.quarto._numero,"Categoria do Quarto:", r.quarto._categoria,"Valor da diária:", r.quarto._diaria)
+                return True
+            else: 
+                print( "Nenhuma reserva encontrada")
+                return False
+        
