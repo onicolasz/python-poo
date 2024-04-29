@@ -24,8 +24,6 @@ class Produto:
     def preco(self):
         return self._preco
     
-    @nome.setter
+    @preco.setter
     def preco(self, preco):
         self._preco = preco
-        
-    

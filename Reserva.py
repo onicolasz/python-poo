@@ -46,4 +46,11 @@ class Reserva:
     def produto(self, produto):
         self._produto = produto
         
+    @property
+    def status(self):
+        return self._status
+    
+    @status.setter
+    def status(self, status):
+        self._status = status
     

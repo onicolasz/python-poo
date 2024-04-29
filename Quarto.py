@@ -29,6 +29,14 @@ class Quarto:
     def diaria(self, diaria):
         self._diaria = diaria
 
+    @property
+    def consumo(self):
+        return self._consumo
+    
+    @consumo.setter
+    def consumo(self, consumo):
+        self._consumo = consumo
+
     def adiciona_consumo(self, consumo):
         self._consumo.append(consumo)
 
@@ -37,11 +45,13 @@ class Quarto:
         for c in self._consumos:
             print(f'Nome: {c.nome} | Preco: {c.preco}')
 
+    #Não faz sentido calcular o valor total de consumo no Quarto, porque no consumo do quarto guardamos o id dos produtos
     def valor_total_consumo(self):
-        valor_total = 0
-        for c in self._consumos:
-            valor_total+=c.preco
-        return valor_total
+        #valor_total = 0
+        #for c in self._consumo:
+        #    valor_total+=c.preco
+        #return valor_total
+        return 0
     
     def limpa_consumo(self):
         self._consumos = []

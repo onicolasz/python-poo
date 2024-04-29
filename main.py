@@ -61,7 +61,9 @@ def main():
         print("Digite 2 para Consultar reserva ")
         print("Digite 3 para Realizar reserva ")
         print("Digite 4 para Cancelar reserva ")
-        print("Digite 5 para Fazer Check-in ")
+        print("Digite 5 para Realizar Check-in ")
+        print("Digite 6 para Realizar Checkout ")
+        print("Digite 7 para Registrar consumo ")
         print("Digite 0 para Sair")
         print("\n")
         option = int(input('Digite sua escolha: '))
@@ -119,8 +121,31 @@ def main():
                 print(f'\n{cancelada}')
             # Realizar check-in
             case 5:
-                cliente = input('Digite o nome do cliente para reserva: ')
+                cliente = input('Digite o nome do cliente para check-in: ')
                 pousada.realiza_checkin(cliente)
+            # Realizar checkout
+            case 6:
+                cliente = input('Digite o nome do cliente para checkout: ')
+                pousada.realiza_checkout(cliente)
+            # Registrar consumo
+            case 7:
+                cliente = input('Digite o nome do cliente para registrar consumo: ')
+                reservas = pousada.consulta_reserva(None, cliente, None)
+                achou_reserva = False
+                if len(reservas) > 0:
+                    for reserva in reservas:
+                        if reserva.status == 'I':
+                            achou_reserva = True
+                            print('Produtos disponiveis: \n')
+                            for p in pousada.produtos:
+                                print(f'Codigo: {p.codigo}, Nome: {p.nome}, Valor: R${p.preco}')
+                            
+                            produto = int(input('Digite o produto desejado: '))
+                            reserva.quarto.adiciona_consumo(produto)
+                            print('Produto adicionado no consumo.')
+                
+                if achou_reserva == False:
+                    print('Não achou reservas com checkin ativo para o cliente')
             case _:
                 print("Opcao {} invalida".format(option))
         

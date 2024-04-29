@@ -25,6 +25,14 @@ class Pousada:
     @contato.setter
     def contato(self, contato):
         self.contato = contato
+
+    @property   
+    def produtos(self):
+        return self._produtos
+    
+    @produtos.setter
+    def produtos(self, produtos):
+        self.produtos = produtos
         
     def realizar_reserva(self, data_inicio, data_fim, cliente, numero_quarto):
         disponibilidade = self.consulta_disponibilidade(data_inicio, data_fim, numero_quarto)
@@ -63,7 +71,7 @@ class Pousada:
         reservas = self._reservas
         valor_total_diarias = 0   
         for r in reservas: 
-            if r.cliente == cliente and r.status = 'A':
+            if r.cliente == cliente and r.status == 'A':
                 r.status = "I"
                 diferenca = r.dia_fim - r.dia_inicio
                 valor_total_diarias = r.quarto.diaria * (diferenca.days +1)
@@ -72,6 +80,34 @@ class Pousada:
                 print("Valor total das diarias:", valor_total_diarias)
                 print("Informacoes do quarto:")
                 print("Numero do quarto: ",r.quarto.numero," Categoria do Quarto: ", r.quarto.categoria," Valor da diária: ", r.quarto.diaria)
+                return True
+        print( "Nenhuma reserva encontrada")
+        return False
+
+    def realiza_checkout(self, cliente):
+        reservas = self._reservas
+        valor_total_diarias = 0   
+        for r in reservas: 
+            if r.cliente == cliente and r.status == 'I':
+                r.status = 'O'
+                diferenca = r.dia_fim - r.dia_inicio
+                valor_total_diarias = r.quarto.diaria * (diferenca.days +1)
+                print ("\nCheckout realizado! Informações abaixo.")  
+                print("Data da reserva: do dia", r.dia_inicio, "ao dia", r.dia_fim)   
+                print("Toal de dias: ",diferenca.days+1)           
+                print("Valor total das diarias:", valor_total_diarias)
+                print("Consumo:")
+                total_consumo = 0
+                if len(r.quarto.consumo) > 0:
+                    for consumo in r.quarto.consumo:
+                        for p in self._produtos:
+                            if p.codigo == consumo:
+                                print('Produto ',p.nome,'- R$',p.preco)
+                                total_consumo+=p.preco
+                
+                print('Valor total dos consumos: R$', total_consumo)      
+                print('Valor total das diarias (c/ consumo): R$', valor_total_diarias+total_consumo)        
+                r.quarto.limpa_consumo()
                 return True
         print( "Nenhuma reserva encontrada")
         return False
