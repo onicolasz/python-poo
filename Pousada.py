@@ -75,4 +75,36 @@ class Pousada:
             else: 
                 print( "Nenhuma reserva encontrada")
                 return False
+
+    def consulta_reserva(self, data, cliente, quarto):
+        reservas = self._reservas
+        reservas_achadas = [] 
+        
+        for reserva in reservas:
+            # Verifica se todos os parâmetros foram fornecidos
+            if data and cliente and quarto:
+                if (reserva.dia_inicio <= data <= reserva.dia_fim) and \
+                (reserva.cliente == cliente) and \
+                (reserva.quarto == quarto):
+                    reservas_achadas.append(reserva)
+            # Verifica se apenas data e cliente foram fornecidos
+            elif data and cliente:
+                if (reserva.dia_inicio <= data <= reserva.dia_fim) and \
+                (reserva.cliente == cliente):
+                    reservas_achadas.append(reserva)
+            # Verifica se apenas data foi fornecido
+            elif data:
+                if reserva.dia_inicio <= data <= reserva.dia_fim:
+                    reservas_achadas.append(reserva)
+            # Verifica se apenas cliente foi fornecido
+            elif cliente:
+                if reserva.cliente == cliente:
+                    reservas_achadas.append(reserva)
+            # Verifica se apenas quarto foi fornecido
+            elif quarto:
+                if reserva.quarto == quarto:
+                    reservas_achadas.append(reserva)
+                
+        return reservas_achadas
+
         
