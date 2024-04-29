@@ -37,7 +37,7 @@ class Pousada:
     def consulta_disponibilidade(self, data_inicio, data_fim, numero_quarto):
         reservas = self._reservas
         for r in reservas: 
-            if r.quarto == numero_quarto:
+            if r.quarto.numero == numero_quarto:
                 # Se a nova reserva começa depois que a reserva atual termina
                 # ou se a nova reserva termina antes que a reserva atual comece,
                 # então não há conflito
@@ -63,18 +63,18 @@ class Pousada:
         reservas = self._reservas
         valor_total_diarias = 0   
         for r in reservas: 
-            if r.cliente == cliente:
+            if r.cliente == cliente and r.status = 'A':
                 r.status = "I"
-                valor_total_diarias = r.quarto._diaria * (r.dia_fim - r.dia_inicio + 1)
-                print ("checkin realizado!")  
-                print("data da reserva: do dia", r.dia_inicio, "Ao dia", r.dia_fim)              
-                print("valor total das diarias:", valor_total_diarias)
-                print("Informações do quarto:")
-                print("Número do quarto:",r.quarto._numero,"Categoria do Quarto:", r.quarto._categoria,"Valor da diária:", r.quarto._diaria)
+                diferenca = r.dia_fim - r.dia_inicio
+                valor_total_diarias = r.quarto.diaria * (diferenca.days +1)
+                print ("\nCheckin realizado!")  
+                print("Data da reserva: do dia", r.dia_inicio, "ao dia", r.dia_fim)              
+                print("Valor total das diarias:", valor_total_diarias)
+                print("Informacoes do quarto:")
+                print("Numero do quarto: ",r.quarto.numero," Categoria do Quarto: ", r.quarto.categoria," Valor da diária: ", r.quarto.diaria)
                 return True
-            else: 
-                print( "Nenhuma reserva encontrada")
-                return False
+        print( "Nenhuma reserva encontrada")
+        return False
 
     def consulta_reserva(self, data, cliente, quarto):
         reservas = self._reservas

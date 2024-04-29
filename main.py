@@ -4,6 +4,12 @@ from Quarto import Quarto
 from Reserva import Reserva
 from Produto import Produto
 
+def procurar_quarto(quartos, numero):
+    for quarto in quartos:
+        if quarto.numero == numero:
+            return quarto
+    return None
+
 def main():
     # Carregar arquivo produtos
     fileProdutos = open('produto.txt', 'r')
@@ -31,7 +37,7 @@ def main():
     reservas = []
     while linha3 != "":
         objReserva = eval(linha3)
-        reserva = Reserva(datetime.strptime(objReserva[0], "%Y-%m-%d"), datetime.strptime(objReserva[1], "%Y-%m-%d"), objReserva[2], objReserva[3], objReserva[4])
+        reserva = Reserva(datetime.strptime(objReserva[0], "%Y-%m-%d"), datetime.strptime(objReserva[1], "%Y-%m-%d"), objReserva[2], procurar_quarto(quartos, objReserva[3]), objReserva[4])
         reservas.append(reserva)
         linha3 = fileReserva.readline()
 
@@ -54,6 +60,8 @@ def main():
         print("Digite 1 para Consultar disponibilidade ")
         print("Digite 2 para Consultar reserva ")
         print("Digite 3 para Realizar reserva ")
+        print("Digite 4 para Cancelar reserva ")
+        print("Digite 5 para Fazer Check-in ")
         print("Digite 0 para Sair")
         print("\n")
         option = int(input('Digite sua escolha: '))
@@ -103,7 +111,16 @@ def main():
                 cliente = input('Digite o nome do cliente para reserva: ')
                 numero_quarto = int(input('Digite o quarto para reserva: '))
                 reserva = pousada.realizar_reserva(datetime.strptime(data_inicio, "%Y-%m-%d"), datetime.strptime(data_fim, "%Y-%m-%d"), cliente, numero_quarto)
-                print(reserva)
+                print(f'\n{reserva}')
+            # Cancelar reserva
+            case 4:
+                cliente = input('Digite o nome do cliente para reserva: ')
+                cancelada = pousada.cancela_reserva(cliente)
+                print(f'\n{cancelada}')
+            # Realizar check-in
+            case 5:
+                cliente = input('Digite o nome do cliente para reserva: ')
+                pousada.realiza_checkin(cliente)
             case _:
                 print("Opcao {} invalida".format(option))
         
