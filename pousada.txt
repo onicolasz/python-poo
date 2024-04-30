@@ -1,1 +1,2 @@
-['Pousada do Sol', '55 51 982767359']
+nome;contato
+Pousada do Sul;55 51 982767359

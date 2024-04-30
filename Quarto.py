@@ -1,3 +1,4 @@
+# Nícolas Barros de Souza e Guilherme Martins
 class Quarto:
     def __init__(self, numero, categoria, diaria):
         self._numero = numero
@@ -55,4 +56,25 @@ class Quarto:
     
     def limpa_consumo(self):
         self._consumos = []
-        
+
+    def procurar_quarto_por_codigo(quartos, numero):
+        for quarto in quartos:
+            if quarto.numero == numero:
+                return quarto
+        return None
+
+    def serializar(self):
+        return f"{self._numero};{self._categoria};{self._diaria}\n"
+
+    def deserializar():
+        quartos_criados = []
+        with open('quarto.txt', 'r') as arquivo:
+            arquivo.readline()
+            for linha in arquivo:
+                dados = linha.strip().split(';')
+                numero = int(dados[0])
+                categoria = dados[1]
+                diaria = float(dados[2])
+                quarto = Quarto(numero, categoria, diaria)
+                quartos_criados.append(quarto)
+        return quartos_criados

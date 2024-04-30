@@ -1,2 +1,3 @@
-['2024-04-30', '2024-05-02', 'Nicolas', 1, 'A']
-['2024-05-10', '2024-05-13', 'Guilherme', 1, 'I']
+dia_fim;dia_inicio;cliente;quarto;status
+2024-04-30;2024-05-02;Nicolas;1;A
+2024-05-10;2024-05-13;Guilherme;1;I

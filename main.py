@@ -1,58 +1,22 @@
+# Nícolas Barros de Souza e Guilherme Martins
 from datetime import datetime
 from Pousada import Pousada
 from Quarto import Quarto
 from Reserva import Reserva
 from Produto import Produto
 
-def procurar_quarto(quartos, numero):
-    for quarto in quartos:
-        if quarto.numero == numero:
-            return quarto
-    return None
-
 def main():
     # Carregar arquivo produtos
-    fileProdutos = open('produto.txt', 'r')
-    linha = fileProdutos.readline()
-    produtos = []
-    while linha != "":
-        objProduto = eval(linha)
-        produto = Produto(objProduto[0], objProduto[1], objProduto[2])
-        produtos.append(produto)
-        linha = fileProdutos.readline()
+    produtos = Produto.deserializar()
 
     # Carregar arquivo quartos
-    fileQuartos = open('quarto.txt', 'r')
-    linha2 = fileQuartos.readline()
-    quartos = []
-    while linha2 != "":
-        objQuarto = eval(linha2)
-        quarto = Quarto(objQuarto[0], objQuarto[1], objQuarto[2])
-        quartos.append(quarto)
-        linha2 = fileQuartos.readline()
+    quartos = Quarto.deserializar()
 
     # Carregar arquivos das reservas
-    fileReserva = open('reserva.txt', 'r')
-    linha3 = fileReserva.readline()
-    reservas = []
-    while linha3 != "":
-        objReserva = eval(linha3)
-        reserva = Reserva(datetime.strptime(objReserva[0], "%Y-%m-%d"), datetime.strptime(objReserva[1], "%Y-%m-%d"), objReserva[2], procurar_quarto(quartos, objReserva[3]), objReserva[4])
-        reservas.append(reserva)
-        linha3 = fileReserva.readline()
+    reservas = Reserva.deserializar(quartos)
 
     # Criar pousada
-    filePousada = open('pousada.txt', 'r')
-    linha4 = filePousada.readline()
-    objPousada = eval(linha4)
-    pousada = Pousada(objPousada[0], objPousada[1], quartos, reservas, produtos)
-
-    #data_inicio = datetime.strptime('2024-05-12', "%Y-%m-%d")
-    #data_fim = datetime.strptime('2024-05-18', "%Y-%m-%d")
-    #print(pousada.consulta_disponibilidade(data_inicio, data_fim, 1))
-    #print(pousada.realizar_reserva(data_inicio, data_fim, "Joao", 1))
-    #print(pousada.consulta_disponibilidade(data_inicio, data_fim, 1))
-
+    pousada = Pousada.deserializar(quartos, reservas, produtos)
 
     while(True) :
         print("\n")
@@ -64,6 +28,7 @@ def main():
         print("Digite 5 para Realizar Check-in ")
         print("Digite 6 para Realizar Checkout ")
         print("Digite 7 para Registrar consumo ")
+        print("Digite 8 para Salvar os dados ")
         print("Digite 0 para Sair")
         print("\n")
         option = int(input('Digite sua escolha: '))
@@ -75,15 +40,16 @@ def main():
             # Consulta disponiblidade
             case 1:
                 numero_quarto = int(input('Digite o quarto para consulta: '))
-                data_inicio = input('Digite a data de inicio da consulta: ')
-                data_fim = input('Digite a data de fim da consulta: ')
+                data_inicio = input('Digite a data de inicio da consulta (no formato 2024-04-30): ')
+                data_fim = input('Digite a data de fim da consulta (no formato 2024-04-30): ')
                 disponibilidade = pousada.consulta_disponibilidade(datetime.strptime(data_inicio, "%Y-%m-%d"), datetime.strptime(data_fim, "%Y-%m-%d"), numero_quarto)
                 if(disponibilidade == False):
-                    print("Quarto NAO esta disponivel para reserva.")
-                print("Quarto esta disponivel para reserva.")
+                    print("\nQuarto NAO esta disponivel para reserva.")
+                else:
+                    print("\nQuarto esta disponivel para reserva.")
             # Pesquisa de reservas
             case 2:
-                data_input = input('Digite a data de pesquisa (deixe em branco se nao quiser filtrar): ')
+                data_input = input('Digite a data de pesquisa (no formato 2024-04-30) (deixe em branco se nao quiser filtrar): ')
                 cliente = input('Digite o nome de pesquisa (deixe em branco se nao quiser filtrar): ')
                 quarto_input = input('Digite o quarto de pesquisa (deixe em branco se nao quiser filtrar): ')
                 print('\n')
@@ -103,13 +69,15 @@ def main():
                 # Verifica se foram encontradas reservas
                 if len(reservas_pesquisadas) > 0:
                     for r in reservas_pesquisadas:
-                        print(f'Reserva: \n Data inicial: {r.dia_inicio} \n Data final: {r.dia_fim} \n Cliente: {r.cliente} \n Numero do Quarto: {r.quarto}')
+                        print('Reserva:')
+                        print(r.toString())
+                        print('\n')
                 else:
                     print("Nao achou reservas com essa pesquisa")
             # Realizar reserva
             case 3:
-                data_inicio = input('Digite a data de inicio da reserva: ')
-                data_fim = input('Digite a data de fim da reserva: ')
+                data_inicio = input('Digite a data de inicio da reserva (no formato 2024-04-30):  ')
+                data_fim = input('Digite a data de fim da reserva (no formato 2024-04-30): ')
                 cliente = input('Digite o nome do cliente para reserva: ')
                 numero_quarto = int(input('Digite o quarto para reserva: '))
                 reserva = pousada.realizar_reserva(datetime.strptime(data_inicio, "%Y-%m-%d"), datetime.strptime(data_fim, "%Y-%m-%d"), cliente, numero_quarto)
@@ -130,22 +98,10 @@ def main():
             # Registrar consumo
             case 7:
                 cliente = input('Digite o nome do cliente para registrar consumo: ')
-                reservas = pousada.consulta_reserva(None, cliente, None)
-                achou_reserva = False
-                if len(reservas) > 0:
-                    for reserva in reservas:
-                        if reserva.status == 'I':
-                            achou_reserva = True
-                            print('Produtos disponiveis: \n')
-                            for p in pousada.produtos:
-                                print(f'Codigo: {p.codigo}, Nome: {p.nome}, Valor: R${p.preco}')
-                            
-                            produto = int(input('Digite o produto desejado: '))
-                            reserva.quarto.adiciona_consumo(produto)
-                            print('Produto adicionado no consumo.')
-                
-                if achou_reserva == False:
-                    print('Não achou reservas com checkin ativo para o cliente')
+                pousada.registrar_consumo(cliente)
+            # Salvar
+            case 8:
+                pousada.salva_dados()
             case _:
                 print("Opcao {} invalida".format(option))
         
